@@ -1,7 +1,67 @@
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Copy, Check } from "lucide-react";
 import { PaymentInfo } from "./types";
+
+interface InteracTransferMessageProps {
+  userEmail?: string;
+  leagueName?: string;
+}
+
+function InteracTransferMessage({ userEmail, leagueName }: InteracTransferMessageProps) {
+  const [copied, setCopied] = useState(false);
+
+  const parts = [userEmail, leagueName].filter(Boolean);
+  const message = parts.join(" | ");
+
+  if (!message) return null;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = message;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+      <p className="text-sm font-medium text-blue-800 mb-2">
+        Include this message with your Interac e-Transfer:
+      </p>
+      <div className="flex items-center gap-2">
+        <code className="flex-1 bg-white px-3 py-2 rounded border border-blue-200 text-sm text-[#6F6F6F] break-all">
+          {message}
+        </code>
+        <Button
+          onClick={handleCopy}
+          variant="outline"
+          size="sm"
+          className="shrink-0 border-blue-300 hover:bg-blue-100"
+        >
+          {copied ? (
+            <Check className="h-4 w-4 text-green-600" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+          <span className="ml-1">{copied ? "Copied" : "Copy"}</span>
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 interface ProcessPaymentFormProps {
   paymentInfo: PaymentInfo;
@@ -9,6 +69,8 @@ interface ProcessPaymentFormProps {
   paymentMethod: string;
   paymentNotes: string;
   processingPayment: boolean;
+  userEmail?: string;
+  leagueName?: string;
   onDepositAmountChange: (amount: string) => void;
   onPaymentMethodChange: (method: string) => void;
   onPaymentNotesChange: (notes: string) => void;
@@ -21,6 +83,8 @@ export function ProcessPaymentForm({
   paymentMethod,
   paymentNotes,
   processingPayment,
+  userEmail,
+  leagueName,
   onDepositAmountChange,
   onPaymentMethodChange,
   onPaymentNotesChange,
@@ -44,6 +108,10 @@ export function ProcessPaymentForm({
   return (
     <div className="border-t pt-6">
       <h4 className="text-lg font-bold text-[#6F6F6F] mb-4">Process Payment</h4>
+
+      {paymentMethod === 'e_transfer' && (
+        <InteracTransferMessage userEmail={userEmail} leagueName={leagueName} />
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -108,4 +176,3 @@ export function ProcessPaymentForm({
     </div>
   );
 }
-

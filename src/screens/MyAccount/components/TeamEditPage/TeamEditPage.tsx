@@ -142,6 +142,8 @@ export function TeamEditPage() {
             onPaymentMethodChange={setPaymentMethod}
             onPaymentNotesChange={setPaymentNotes}
             onProcessPayment={handleProcessPayment}
+            userEmail={team?.users?.email}
+            leagueName={team?.leagues?.name}
           />
         )}
 
