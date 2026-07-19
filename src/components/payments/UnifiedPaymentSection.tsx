@@ -14,6 +14,8 @@ interface UnifiedPaymentSectionProps {
   paymentMethod: string;
   paymentNotes: string;
   processingPayment: boolean;
+  userEmail?: string;
+  leagueName?: string;
   onEditPayment: (entry: PaymentHistoryEntry) => void;
   onUpdateEditingPayment: (payment: EditPaymentForm) => void;
   onSavePaymentEdit: () => void;
@@ -34,6 +36,8 @@ export function UnifiedPaymentSection({
   paymentMethod,
   paymentNotes,
   processingPayment,
+  userEmail,
+  leagueName,
   onEditPayment,
   onUpdateEditingPayment,
   onSavePaymentEdit,
@@ -113,6 +117,8 @@ export function UnifiedPaymentSection({
           paymentMethod={paymentMethod}
           paymentNotes={paymentNotes}
           processingPayment={processingPayment}
+          userEmail={userEmail}
+          leagueName={leagueName}
           onDepositAmountChange={onDepositAmountChange}
           onPaymentMethodChange={onPaymentMethodChange}
           onPaymentNotesChange={onPaymentNotesChange}
